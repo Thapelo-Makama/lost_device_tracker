@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Reports{% endblock %}
+{% block content %}
+<h2 class="mb-4"><i class="fas fa-file-shield me-2"></i>Police Reports</h2>
+<div class="card"><div class="card-body">
+<table class="table align-middle">
+<thead><tr><th>Case #</th><th>User</th><th>Device</th><th>Station</th><th>Status</th><th>Created</th><th>Actions</th></tr></thead>
+<tbody>
+{% for r in reports %}
+<tr>
+  <td><strong>{{ r.case_number }}</strong></td>
+  <td>{{ r.user.username }}</td>
+  <td>{{ r.device.device_name }}</td>
+  <td>{{ r.police_station or '—' }}</td>
+  <td>
+    <span class="badge bg-{% if r.status=='resolved' %}success{% elif r.status=='investigating' %}info{% elif r.status=='rejected' %}danger{% else %}warning{% endif %}">
+      {{ r.status|title }}</span>
+  </td>
+  <td>{{ r.created_at.strftime('%Y-%m-%d') }}</td>
+  <td>
+    <form method="POST" action="{{ url_for('admin.update_report', rid=r.id) }}" class="d-flex gap-1">
+      <select name="status" class="form-select form-select-sm">
+        <option value="pending" {% if r.status=='pending' %}selected{% endif %}>Pending</option>
+        <option value="investigating" {% if r.status=='investigating' %}selected{% endif %}>Investigating</option>
+        <option value="resolved" {% if r.status=='resolved' %}selected{% endif %}>Resolved</option>
+        <option value="rejected" {% if r.status=='rejected' %}selected{% endif %}>Rejected</option>
+      </select>
+      <input type="text" name="admin_notes" class="form-control form-control-sm" placeholder="Notes">
+      <button class="btn btn-sm btn-primary">Save</button>
+    </form>
+  </td>
+</tr>
+{% endfor %}
+</tbody></table>
+</div></div>
+{% endblock %}

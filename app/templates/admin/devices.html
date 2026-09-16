@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}All Devices{% endblock %}
+{% block content %}
+<h2 class="mb-4"><i class="fas fa-mobile-alt me-2"></i>All Devices</h2>
+<div class="card"><div class="card-body">
+<table class="table align-middle">
+<thead><tr><th>Owner</th><th>Name</th><th>Type</th><th>IMEI/Serial</th><th>Status</th><th>Location</th><th>Actions</th></tr></thead>
+<tbody>
+{% for d in devices %}
+<tr>
+  <td>{{ d.owner.username }}</td>
+  <td><strong>{{ d.device_name }}</strong></td>
+  <td>{{ d.device_type|title }}</td>
+  <td><small>{{ d.imei_number or d.serial_number or '—' }}</small></td>
+  <td>
+    {% if d.is_recovered %}<span class="badge bg-success">Recovered</span>
+    {% elif d.is_lost %}<span class="badge bg-danger">Lost</span>
+    {% else %}<span class="badge bg-success">Active</span>{% endif %}
+  </td>
+  <td>{% if d.last_location_lat %}<i class="fas fa-map-marker-alt text-danger"></i> Yes{% else %}<span class="text-muted">—</span>{% endif %}</td>
+  <td><a href="{{ url_for('admin.admin_device_view', did=d.id) }}" class="btn btn-sm btn-primary"><i class="fas fa-eye"></i> View</a></td>
+</tr>
+{% endfor %}
+</tbody></table>
+</div></div>
+{% endblock %}

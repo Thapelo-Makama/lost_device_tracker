@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}File Report{% endblock %}
+{% block content %}
+<div class="row justify-content-center"><div class="col-md-8">
+<div class="card"><div class="card-header"><h5 class="mb-0">File Police Report — {{ device.device_name }}</h5></div>
+<div class="card-body"><form method="POST">{{ form.hidden_tag() }}
+  <div class="mb-3">{{ form.description.label(class="form-label") }}{{ form.description(class="form-control", rows=4) }}</div>
+  <div class="row">
+    <div class="col-md-6 mb-3">{{ form.police_station.label(class="form-label") }}{{ form.police_station(class="form-control") }}</div>
+    <div class="col-md-6 mb-3">{{ form.police_report_number.label(class="form-label") }}{{ form.police_report_number(class="form-control") }}</div>
+  </div>
+  <div class="row">
+    <div class="col-md-6 mb-3">{{ form.officer_name.label(class="form-label") }}{{ form.officer_name(class="form-control") }}</div>
+    <div class="col-md-6 mb-3">{{ form.officer_contact.label(class="form-label") }}{{ form.officer_contact(class="form-control") }}</div>
+  </div>
+  {{ form.submit(class="btn btn-primary") }}
+  <a href="{{ url_for('devices.track_device', device_id=device.id) }}" class="btn btn-secondary">Cancel</a>
+</form></div></div></div></div>
+{% endblock %}

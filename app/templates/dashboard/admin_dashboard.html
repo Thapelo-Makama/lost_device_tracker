@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<h2 class="mb-4"><i class="fas fa-tachometer-alt me-2"></i>Admin Dashboard</h2>
+<div class="row g-3 mb-4">
+  <div class="col-md-3"><div class="stat-card bg-grad"><h6>Users</h6><h2>{{ total_users }}</h2></div></div>
+  <div class="col-md-3"><div class="stat-card" style="background:#3b82f6;"><h6>Devices</h6><h2>{{ total_devices }}</h2></div></div>
+  <div class="col-md-3"><div class="stat-card" style="background:#ef4444;"><h6>Lost</h6><h2>{{ lost_devices }}</h2></div></div>
+  <div class="col-md-3"><div class="stat-card" style="background:#10b981;"><h6>Evidence</h6><h2>{{ total_evidences }}</h2></div></div>
+</div>
+<div class="row g-3 mb-4">
+  <div class="col-md-4"><div class="stat-card" style="background:#f59e0b;"><h6>Pending Users</h6><h2>{{ pending_users }}</h2></div></div>
+  <div class="col-md-4"><div class="stat-card" style="background:#8b5cf6;"><h6>Unverified Evidence</h6><h2>{{ unverified_evidence }}</h2></div></div>
+  <div class="col-md-4"><div class="stat-card" style="background:#ec4899;"><h6>Open Reports</h6><h2>{{ open_reports }}</h2></div></div>
+</div>
+<div class="row g-3">
+  <div class="col-md-6"><div class="card"><div class="card-header"><i class="fas fa-users me-2"></i>Recent Users</div>
+  <div class="card-body">
+    <table class="table table-sm"><tbody>
+    {% for u in recent_users %}
+    <tr>
+      <td>{{ u.username }}</td>
+      <td><small class="text-muted">{{ u.email }}</small></td>
+      <td>{% if u.is_verified %}<span class="badge bg-verified">Verified</span>{% else %}<span class="badge bg-pending">Pending</span>{% endif %}</td>
+    </tr>
+    {% endfor %}
+    </tbody></table>
+  </div></div></div>
+  <div class="col-md-6"><div class="card"><div class="card-header"><i class="fas fa-clock me-2"></i>Recent Activity</div>
+  <div class="card-body"><ul class="list-unstyled mb-0">
+    {% for a in recent_activities %}
+    <li class="border-bottom pb-2 mb-2">
+      <strong>{{ a.action }}</strong>
+      <small class="text-muted d-block">{{ a.timestamp.strftime('%Y-%m-%d %H:%M') }} {% if a.user %}· {{ a.user.username }}{% endif %}</small>
+    </li>
+    {% endfor %}
+  </ul></div></div></div>
+</div>
+{% endblock %}

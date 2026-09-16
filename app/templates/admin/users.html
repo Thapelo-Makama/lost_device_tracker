@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Manage Users{% endblock %}
+{% block content %}
+<h2 class="mb-4"><i class="fas fa-users me-2"></i>Manage Users</h2>
+
+<div class="card mb-4"><div class="card-header bg-warning text-white">
+  <i class="fas fa-user-clock me-2"></i>Pending Approval ({{ pending|length }})
+</div>
+<div class="card-body">
+{% if pending %}
+<table class="table align-middle">
+<thead><tr><th>Username</th><th>Name</th><th>Email</th><th>Phone</th><th>Registered</th><th>Actions</th></tr></thead>
+<tbody>
+{% for u in pending %}
+<tr>
+  <td><strong>{{ u.username }}</strong></td>
+  <td>{{ u.full_name }}</td>
+  <td>{{ u.email }}</td>
+  <td>{{ u.phone_number }}</td>
+  <td>{{ u.created_at.strftime('%Y-%m-%d') }}</td>
+  <td>
+    <form method="POST" action="{{ url_for('admin.approve_user', uid=u.id) }}" class="d-inline">
+      <button class="btn btn-sm btn-success"><i class="fas fa-check"></i> Approve</button></form>
+    <form method="POST" action="{{ url_for('admin.reject_user', uid=u.id) }}" class="d-inline">
+      <button class="btn btn-sm btn-danger" onclick="return confirm('Reject and remove?')"><i class="fas fa-times"></i> Reject</button></form>
+  </td>
+</tr>
+{% endfor %}
+</tbody></table>
+{% else %}<p class="text-muted mb-0">No pending users.</p>{% endif %}
+</div></div>
+
+<div class="card"><div class="card-header"><i class="fas fa-users me-2"></i>All Users</div>
+<div class="card-body">
+<table class="table align-middle">
+<thead><tr><th>Username</th><th>Name</th><th>Email</th><th>Status</th><th>Role</th><th>Actions</th></tr></thead>
+<tbody>
+{% for u in users %}
+<tr>
+  <td><strong>{{ u.username }}</strong></td>
+  <td>{{ u.full_name }}</td>
+  <td>{{ u.email }}</td>
+  <td>
+    {% if u.is_banned %}<span class="badge bg-danger">Banned</span>
+    {% elif u.is_verified %}<span class="badge bg-verified">Active</span>
+    {% else %}<span class="badge bg-pending">Pending</span>{% endif %}
+  </td>
+  <td>{% if u.is_admin %}<span class="badge bg-primary">Admin</span>{% else %}User{% endif %}</td>
+  <td>
+    {% if u.id != current_user.id %}
+    <form method="POST" action="{{ url_for('admin.ban_user', uid=u.id) }}" class="d-inline">
+      <button class="btn btn-sm btn-outline-{% if u.is_banned %}success{% else %}danger{% endif %}">
+        {% if u.is_banned %}Unban{% else %}Ban{% endif %}</button></form>
+    <form method="POST" action="{{ url_for('admin.make_admin', uid=u.id) }}" class="d-inline">
+      <button class="btn btn-sm btn-outline-primary">
+        {% if u.is_admin %}Remove Admin{% else %}Make Admin{% endif %}</button></form>
+    {% endif %}
+  </td>
+</tr>
+{% endfor %}
+</tbody></table>
+</div></div>
+{% endblock %}

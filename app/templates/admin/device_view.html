@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}{{ device.device_name }}{% endblock %}
+{% block content %}
+<h2 class="mb-4">{{ device.device_name }}</h2>
+<div class="row g-4">
+  <div class="col-md-5">
+    <div class="card"><div class="card-header">Device Info</div><div class="card-body">
+      <table class="table table-sm">
+        <tr><th>Owner</th><td>{{ device.owner.username }} ({{ device.owner.email }})</td></tr>
+        <tr><th>Type</th><td>{{ device.device_type|title }}</td></tr>
+        <tr><th>Brand/Model</th><td>{{ device.brand }} {{ device.model }}</td></tr>
+        <tr><th>Color</th><td>{{ device.color }}</td></tr>
+        <tr><th>IMEI</th><td>{{ device.imei_number or '—' }}</td></tr>
+        <tr><th>Serial</th><td>{{ device.serial_number or '—' }}</td></tr>
+        <tr><th>Status</th><td>{% if device.is_lost %}<span class="badge bg-danger">Lost</span>{% else %}<span class="badge bg-success">Active</span>{% endif %}</td></tr>
+      </table>
+    </div></div>
+  </div>
+  <div class="col-md-7">
+    <div class="card"><div class="card-header">Location Map</div><div class="card-body">
+      {% if device.last_location_lat %}
+      <div id="map" style="height:400px;border-radius:10px;"></div>
+      {% else %}<p class="text-muted">No location data.</p>{% endif %}
+    </div></div>
+  </div>
+</div>
+
+<div class="card mt-4"><div class="card-header"><i class="fas fa-history me-2"></i>Location History</div>
+<div class="card-body">
+{% if locations %}
+<table class="table table-sm"><thead><tr><th>Latitude</th><th>Longitude</th><th>Time</th></tr></thead>
+<tbody>{% for l in locations %}
+<tr><td>{{ l.latitude }}</td><td>{{ l.longitude }}</td><td>{{ l.timestamp.strftime('%Y-%m-%d %H:%M') }}</td></tr>
+{% endfor %}</tbody></table>
+{% else %}<p class="text-muted mb-0">No history.</p>{% endif %}
+</div></div>
+{% endblock %}
+{% block extra_js %}
+{% if device.last_location_lat %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const map = L.map('map').setView([{{ device.last_location_lat }}, {{ device.last_location_lng }}], 15);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+  L.marker([{{ device.last_location_lat }}, {{ device.last_location_lng }}]).addTo(map);
+});
+</script>
+{% endif %}
+{% endblock %}

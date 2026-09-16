@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Track {{ device.device_name }}{% endblock %}
+{% block content %}
+<h2 class="mb-4"><i class="fas fa-map-marker-alt me-2"></i>{{ device.device_name }}</h2>
+<div class="row g-4">
+  <div class="col-md-5">
+    <div class="card"><div class="card-header">Device Details</div><div class="card-body">
+      <table class="table table-sm">
+        <tr><th>Type</th><td>{{ device.device_type|title }}</td></tr>
+        <tr><th>Brand</th><td>{{ device.brand or '—' }}</td></tr>
+        <tr><th>Model</th><td>{{ device.model or '—' }}</td></tr>
+        <tr><th>Color</th><td>{{ device.color or '—' }}</td></tr>
+        <tr><th>IMEI</th><td>{{ device.imei_number or '—' }}</td></tr>
+        <tr><th>Serial</th><td>{{ device.serial_number or '—' }}</td></tr>
+        <tr><th>Status</th><td>
+          {% if device.is_recovered %}<span class="badge bg-success">Recovered</span>
+          {% elif device.is_lost %}<span class="badge bg-danger">Lost</span>
+          {% else %}<span class="badge bg-success">Active</span>{% endif %}
+        </td></tr>
+        <tr><th>Locked</th><td>{% if device.is_locked %}<i class="fas fa-lock text-danger"></i> Yes{% else %}<i class="fas fa-lock-open text-success"></i> No{% endif %}</td></tr>
+        {% if device.is_lost %}
+        <tr><th>Lost Date</th><td>{{ device.lost_date.strftime('%Y-%m-%d %H:%M') if device.lost_date else '—' }}</td></tr>
+        <tr><th>Lost Location</th><td>{{ device.lost_location or '—' }}</td></tr>
+        {% endif %}
+      </table>
+      <div class="d-grid gap-2">
+        <button onclick="updateLocation()" class="btn btn-success"><i class="fas fa-sync me-1"></i>Update My Location</button>
+        <a href="{{ url_for('devices.upload_evidence', device_id=device.id) }}" class="btn btn-primary"><i class="fas fa-upload me-1"></i>Upload Evidence</a>
+        <a href="{{ url_for('devices.file_report', device_id=device.id) }}" class="btn btn-warning"><i class="fas fa-file-shield me-1"></i>File Police Report</a>
+        <form method="POST" action="{{ url_for('devices.toggle_lock', device_id=device.id) }}">
+          <button class="btn btn-outline-{% if device.is_locked %}success{% else %}danger{% endif %} w-100">
+            <i class="fas fa-lock me-1"></i>{% if device.is_locked %}Unlock{% else %}Lock{% endif %} Device
+          </button>
+        </form>
+      </div>
+    </div></div>
+  </div>
+  <div class="col-md-7">
+    <div class="card"><div class="card-header"><i class="fas fa-map me-2"></i>Location Map</div>
+    <div class="card-body">
+      {% if device.last_location_lat %}
+        <div id="map" style="height:420px;border-radius:10px;"></div>
+        <p class="small text-muted mt-2 mb-0">Last updated: {{ device.last_location_time.strftime('%Y-%m-%d %H:%M') if device.last_location_time else '—' }}</p>
+      {% else %}
+        <div class="text-center py-5">
+          <i class="fas fa-map-marked-alt fa-4x text-muted mb-3"></i>
+          <p class="text-muted">No location data yet.</p>
+          <button onclick="updateLocation()" class="btn btn-primary">Share Current Location</button>
+        </div>
+      {% endif %}
+    </div></div>
+  </div>
+</div>
+
+{% if device.evidences %}
+<div class="card mt-4"><div class="card-header"><i class="fas fa-file-alt me-2"></i>Evidence</div>
+<div class="card-body"><table class="table">
+<thead><tr><th>Type</th><th>Description</th><th>Uploaded</th><th>Status</th></tr></thead>
+<tbody>
+{% for e in device.evidences %}
+<tr>
+  <td>{{ e.evidence_type|title }}</td>
+  <td>{{ e.description or '—' }}</td>
+  <td>{{ e.uploaded_at.strftime('%Y-%m-%d') }}</td>
+  <td>{% if e.is_verified %}<span class="badge bg-success">Verified</span>{% else %}<span class="badge bg-pending">Pending</span>{% endif %}</td>
+</tr>
+{% endfor %}
+</tbody></table></div></div>
+{% endif %}
+{% endblock %}
+{% block extra_js %}
+<script>
+function updateLocation() {
+  if (!navigator.geolocation) return alert('Geolocation not supported.');
+  navigator.geolocation.getCurrentPosition(p => {
+    fetch('{{ url_for("devices.update_location", device_id=device.id) }}', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ latitude: p.coords.latitude, longitude: p.coords.longitude })
+    }).then(r => r.json()).then(d => { if (d.success) { alert('✅ Location updated!'); location.reload(); }});
+  }, e => alert('Error: ' + e.message));
+}
+{% if device.last_location_lat %}
+document.addEventListener('DOMContentLoaded', () => {
+  const map = L.map('map').setView([{{ device.last_location_lat }}, {{ device.last_location_lng }}], 15);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+  L.marker([{{ device.last_location_lat }}, {{ device.last_location_lng }}]).addTo(map).bindPopup('{{ device.device_name }}');
+});
+{% endif %}
+</script>
+{% endblock %}

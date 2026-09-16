@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}All Messages{% endblock %}
+{% block content %}
+<h2 class="mb-4"><i class="fas fa-envelope me-2"></i>All Messages</h2>
+<div class="card"><div class="card-body">
+{% for m in messages %}
+<div class="border-bottom pb-3 mb-3">
+  <div class="d-flex justify-content-between">
+    <div><strong>{{ m.sender.username }}</strong> → <strong>{{ m.recipient.username }}</strong>
+      {% if m.is_private %}<span class="badge bg-secondary ms-2">Private</span>{% endif %}</div>
+    <small class="text-muted">{{ m.timestamp.strftime('%Y-%m-%d %H:%M') }}</small>
+  </div>
+  {% if m.subject %}<div class="fw-semibold mt-1">{{ m.subject }}</div>{% endif %}
+  <p class="mb-0 mt-1">{{ m.content }}</p>
+</div>
+{% endfor %}
+</div></div>
+{% endblock %}

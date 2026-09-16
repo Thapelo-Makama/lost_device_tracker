@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Register Device{% endblock %}
+{% block content %}
+<div class="row justify-content-center"><div class="col-md-9">
+<div class="card"><div class="card-header"><h5 class="mb-0"><i class="fas fa-plus-circle me-2"></i>Register New Device</h5></div>
+<div class="card-body"><form method="POST">{{ form.hidden_tag() }}
+  <div class="row">
+    <div class="col-md-6 mb-3">{{ form.device_name.label(class="form-label") }}{{ form.device_name(class="form-control", placeholder="e.g. My Honor 90") }}</div>
+    <div class="col-md-6 mb-3">{{ form.device_type.label(class="form-label") }}{{ form.device_type(class="form-select") }}</div>
+  </div>
+  <div class="row">
+    <div class="col-md-6 mb-3">{{ form.imei_number.label(class="form-label") }}{{ form.imei_number(class="form-control", placeholder="Dial *#06# on phone") }}</div>
+    <div class="col-md-6 mb-3">{{ form.serial_number.label(class="form-label") }}{{ form.serial_number(class="form-control") }}</div>
+  </div>
+  <div class="row">
+    <div class="col-md-4 mb-3">{{ form.brand.label(class="form-label") }}{{ form.brand(class="form-control") }}</div>
+    <div class="col-md-4 mb-3">{{ form.model.label(class="form-label") }}{{ form.model(class="form-control") }}</div>
+    <div class="col-md-4 mb-3">{{ form.color.label(class="form-label") }}{{ form.color(class="form-control") }}</div>
+  </div>
+  <div class="mb-3">{{ form.description.label(class="form-label") }}{{ form.description(class="form-control", rows=3, placeholder="Any distinguishing features...") }}</div>
+  <div class="row">
+    <div class="col-md-6 mb-3">{{ form.lost_date.label(class="form-label") }}{{ form.lost_date(class="form-control", placeholder="YYYY-MM-DD HH:MM:SS") }}</div>
+    <div class="col-md-6 mb-3">{{ form.lost_location.label(class="form-label") }}{{ form.lost_location(class="form-control", placeholder="e.g. Pretoria CBD") }}</div>
+  </div>
+  <div class="mb-3 form-check">{{ form.is_lost(class="form-check-input") }}{{ form.is_lost.label(class="form-check-label") }}</div>
+  {{ form.submit(class="btn btn-primary") }}
+  <a href="{{ url_for('dashboard.user_dashboard') }}" class="btn btn-secondary">Cancel</a>
+</form></div></div></div></div>
+{% endblock %}
