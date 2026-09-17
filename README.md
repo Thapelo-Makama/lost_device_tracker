@@ -2,47 +2,74 @@
 
 A full-stack web application that helps South Africans recover lost or stolen devices with police assistance.
 
-**🌐 Live Demo:** https://lost-device-tracker.onrender.com
-**💻 Code:** https://github.com/Thapelo-Makama/lost_device_tracker
+**🌐 Live Demo:** [lost-device-tracker.onrender.com](https://lost-device-tracker.onrender.com)
+**💻 GitHub:** [github.com/Thapelo-Makama/lost_device_tracker](https://github.com/Thapelo-Makama/lost_device_tracker)
 
 ---
 
 ## 📋 Overview
 
-Users register devices with IMEI numbers, upload ownership evidence (affidavits, receipts), share GPS locations, and file police reports. Admins verify evidence and assist with recovery.
+Every year, thousands of South Africans lose their phones and laptops. Proving ownership, tracking the device, and filing a police report are all difficult. This platform solves those problems in one place.
+
+Users register devices with IMEI numbers, upload ownership evidence, share GPS locations, and file police reports. Admins verify evidence and assist with recovery.
 
 ---
 
 ## ✨ Features
 
-### For Users
-- 🔐 Secure registration with admin approval workflow
-- 📱 Register devices with IMEI, serial, brand, model
-- 📍 Live GPS tracking with interactive maps
-- 📄 Upload evidence (affidavits, receipts, photos)
-- 🚔 File police reports with case numbers
-- 💬 Message admin publicly or privately
-- 🤖 AI chatbot for platform help
-
-### For Admins
-- 📊 Real-time dashboard with statistics
-- 👥 Approve / reject new user registrations
-- ✅ Verify or reject uploaded evidence
-- 🗂 Manage devices, reports, and messages
-- 📝 Full activity log with IP addresses
-- 🚫 Ban users and manage admin privileges
+- User registration with admin approval workflow
+- Device registration (IMEI, serial, brand, model)
+- Live GPS tracking with Leaflet.js maps
+- Evidence upload (affidavits, receipts, photos)
+- Admin verification of ownership
+- Police report filing with case numbers
+- Public and private messaging
+- AI chatbot for platform help
 
 ---
 
 ## 🛠 Tech Stack
 
-- **Backend:** Python 3, Flask, SQLAlchemy
-- **Database:** MySQL (Aiven Cloud)
-- **Auth:** Flask-Login + Werkzeug hashing
-- **Frontend:** Jinja2, Bootstrap 5
-- **Maps:** Leaflet.js + OpenStreetMap
-- **AI:** Keyword + fuzzy matching
-- **Hosting:** Render + UptimeRobot
+| Layer | Technology |
+|-------|------------|
+| Backend | Python 3, Flask, SQLAlchemy ORM |
+| Database | MySQL (Aiven Cloud) |
+| Auth | Flask-Login, Werkzeug hashing |
+| Frontend | Jinja2, Bootstrap 5, vanilla JS |
+| Maps | Leaflet.js + OpenStreetMap |
+| AI | Keyword + fuzzy matching (difflib) |
+| Hosting | Render + UptimeRobot |
+
+---
+
+## 📸 Screenshots
+
+### Admin Dashboard — Real-time Stats
+![Admin Dashboard](docs/screenshots/dashboard.png)
+
+### Manage Users — Approve, Ban, Promote
+![Manage Users](docs/screenshots/users.png)
+
+### Pending User Approvals
+![Pending Users](docs/screenshots/pending.png)
+
+### Device Management with IMEI Tracking
+![Devices](docs/screenshots/devices.png)
+
+### Evidence Verification Workflow
+![Evidence](docs/screenshots/evidence.png)
+
+### Police Reports
+![Reports](docs/screenshots/report.png)
+
+### User Dashboard
+![User Dashboard](docs/screenshots/user_dashboard.png)
+
+### Messages — Public and Private
+![Messages](docs/screenshots/message.png)
+
+### Login
+![Login](docs/screenshots/login.png)
 
 ---
 
@@ -62,6 +89,48 @@ Open http://localhost:5000
 
 ---
 
+## 🌍 Environment Variables
+
+| Key | Description |
+|-----|-------------|
+| SECRET_KEY | Flask session key |
+| DATABASE_URL | MySQL connection string |
+| OPENAI_API_KEY | Optional AI responses |
+| AI_MODEL | Default: gpt-3.5-turbo |
+
+---
+
+## 🔐 Security
+
+- Passwords hashed with Werkzeug scrypt
+- CSRF protection on all forms
+- SQL injection prevention via SQLAlchemy ORM
+- SSL-encrypted database connection
+- Admin authorization decorators
+- Secrets stored as environment variables
+
+---
+
+## 🎯 Future Improvements
+
+- Automated tests with pytest
+- Celery + Redis background jobs
+- REST API for mobile app
+- Email notifications
+- 2FA authentication
+- Rate limiting
+
+---
+
 ## 📄 License
 
 MIT © Thapelo Makama
+
+---
+
+## 👤 Author
+
+**Thapelo Makama**
+- Email: thapelofrancis266@gmail.com
+- GitHub: [@Thapelo-Makama](https://github.com/Thapelo-Makama)
+
